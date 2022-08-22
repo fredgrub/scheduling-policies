@@ -1,11 +1,15 @@
 FROM ubuntu:18.04
 
 # Install build packages and tools
-RUN apt-get update -y
-RUN apt-get install -y git python3-pip gcc-4.8 g++-4.8 g++ cmake libboost-context-dev libboost-dev doxygen transfig
+RUN apt-get update -yq
+RUN apt-get install -yq git python3 python3-pip gcc-4.8 g++-4.8 g++ cmake libboost-context-dev libboost-dev doxygen transfig
 
-# Install python packages
-RUN apt-get install -y python3-numpy python3-scipy python3-matplotlib python3-seaborn python3-sklearn python3-statsmodels
+# Fix tzdata issue
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Sao_Paulo
+
+# Install dependencies
+RUN apt-get install -yq python3-numpy python3-scipy python3-matplotlib python3-seaborn python3-sklearn python3-statsmodels
 
 # Build environment variables
 ARG BUILD_ROOT=/opt
@@ -29,4 +33,3 @@ RUN make check
 RUN make install
 RUN ln -s /opt/simgrid/lib/libsimgrid.so /usr/lib/libsimgrid.so
 RUN ln -s /opt/simgrid/lib/libsimgrid.so.3.13 /usr/lib/libsimgrid.so.3.13
-
