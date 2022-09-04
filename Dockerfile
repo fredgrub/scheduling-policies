@@ -1,35 +1,29 @@
-FROM ubuntu:18.04
+# Set up development enviroment with SimGrid and python3 + pip. Depends on Dockerfile.simgrid 
+# image (named as simgrid-v3_13).
+# 
+# 1. Install python3 + pip, project dependencies and useful tools.
+# 
+# By: Lucas de Sousa Rosa <roses.lucas404@gmail.com>
+# Created: 2022/09/04 19:43 by @fredgrub
 
-# Install build packages and tools
-RUN apt-get update -yq
-RUN apt-get install -yq git python3 python3-pip gcc-4.8 g++-4.8 g++ cmake libboost-context-dev libboost-dev doxygen transfig
+FROM simgrid-v3_13
 
-# Fix tzdata issue
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=America/Sao_Paulo
+# Install python3 and useful tools
+RUN apt-get update
+RUN apt install -y \
+    python3 \
+    python3-pip \
+    wget \
+    vim
 
-# Install dependencies
-RUN apt-get install -yq python3-numpy python3-scipy python3-matplotlib python3-seaborn python3-sklearn python3-statsmodels
+# Ensure pip is updated
+RUN python3 -m pip install --upgrade pip setuptools wheel
 
-# Build environment variables
-ARG BUILD_ROOT=/opt
-ARG TARGET_DIR=/opt/simgrid
-ARG CLONE_DIR=simgrid-313
-ARG SIMGRID_URL=https://framagit.org/simgrid/simgrid.git
-ARG SIMGRID_VERSION=v3_13
-
-# Preparation
-WORKDIR ${BUILD_ROOT}
-RUN mkdir /usr/src/dev
-RUN ln -s ${CLONE_DIR} ${TARGET_DIR}
-
-# Clone and build
-RUN git clone -b ${SIMGRID_VERSION} --single-branch ${SIMGRID_URL} ${CLONE_DIR}
-
-WORKDIR ${TARGET_DIR}
-RUN cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${TARGET_DIR}
-RUN make
-RUN make check
-RUN make install
-RUN ln -s /opt/simgrid/lib/libsimgrid.so /usr/lib/libsimgrid.so
-RUN ln -s /opt/simgrid/lib/libsimgrid.so.3.13 /usr/lib/libsimgrid.so.3.13
+# Install python packages
+RUN python3 -m pip install \
+    numpy \
+    scipy \
+    matplotlib \
+    seaborn \
+    statsmodels \
+    sklearn

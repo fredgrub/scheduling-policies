@@ -1,0 +1,77 @@
+# Build and install SimGrid v3_13 (based on https://framagit.org/simgrid/simgrid
+# Dockerfile).
+# 
+# 1. Install SimGrid's dependencies;
+# 2. Compile and install SimGrid itself. Clean the tree;
+# 3. Remove everything that was installed, and re-install what's needed by the 
+#    SimGrid libraries before the Gran Final Cleanup.
+#
+# By: Lucas de Sousa Rosa <roses.lucas404@gmail.com>
+# Created: 2022/09/04 19:23 by @fredgrub
+
+FROM debian:11
+
+# Environment variables (avaliable only the build process)
+ARG SIMGRID_URL=https://framagit.org/simgrid/simgrid/-/archive/v3_13/simgrid-v3_13.tar.gz
+ARG BUILD_ROOT=/usr/
+
+# Preparation
+RUN apt-get update && apt upgrade -y
+RUN apt install -y wget
+RUN mkdir /opt/source/
+
+WORKDIR /opt/source
+
+RUN wget ${SIMGRID_URL}
+RUN tar xf simgrid-* && rm simgrid-*.tar.gz
+
+WORKDIR /opt/source/simgrid-v3_13
+
+# Install SimGrid dependencies
+RUN apt install -y \
+    g++ \
+    gcc \
+    git \
+    valgrind \
+    gfortran \
+    libboost-dev \
+    libboost-all-dev \
+    libeigen3-dev \
+    cmake \
+    dpkg-dev \
+    python3-dev \
+    pybind11-dev
+
+# Compile SimGrid
+RUN cmake -DCMAKE_INSTALL_PREFIX=/usr/ \
+    -Denable_documentation=OFF \
+    -Denable_smpi=ON \
+    -Denable_compile_optimizations=ON .
+
+RUN make -j4
+
+RUN mkdir debian/ && \
+    touch debian/control && \
+    dpkg-shlibdeps --ignore-missing-info lib/*.so -llib/ -O/tmp/deps
+
+RUN make install && make clean
+
+# Final step and clean up
+RUN apt remove -y \
+    g++ \
+    gcc \
+    git \
+    valgrind \
+    default-jdk \
+    gfortran \
+    libboost-dev \
+    libboost-all-dev \
+    libeigen3-dev \
+    cmake \
+    dpkg-dev \
+    wget \
+    python3-dev \
+    pybind11-dev
+RUN apt install `sed -e 's/shlibs:Depends=//' -e 's/([^)]*)//g' -e 's/,//g' /tmp/deps`
+
+RUN apt autoremove -y && apt autoclean && apt clean
