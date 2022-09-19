@@ -26,4 +26,5 @@ RUN python3 -m pip install \
     matplotlib \
     seaborn \
     statsmodels \
-    sklearn
+    sklearn \
+    jupyterlab
