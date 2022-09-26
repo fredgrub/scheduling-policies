@@ -17,7 +17,7 @@ CFLAGS = -O3 $(WARNINGS)
 INCLUDES = 
 DEFS = -I$(INSTALL_PATH)/include -L$(INSTALL_PATH)/lib/
 LDADD = -lm -lsimgrid 
-LIBS = 
+LIBS = polynomials.c
 
 C_FILES = $(wildcard *.c)
 BIN_FILES = $(patsubst %.c,%,$(C_FILES))
@@ -31,6 +31,7 @@ O_FILES = $(patsubst %.c,%.o,$(C_FILES))
 
 all: sched-simulator-estimate-backfilling
 all: sched-simulator-runtime
+
 clean:
 	rm -f $(BIN_FILES) *.o *~
 .SUFFIXES:

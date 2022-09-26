@@ -142,48 +142,7 @@ def perform_experiments(num_exp, trace, trace_name, policies, conditions):
         _buffer.close()
     return slowdowns
 
-def func_comparison():
-    traces = {
-        "Lublin_256": [50, "swfs/lublin_256.swf", "xmls/deployment_day.xml"],
-        "Lublin_1024": [50, "swfs/lublin_1024.swf", "xmls/deployment_day_1024.xml"]
-        }
-    simulator = "sched-simulator-runtime"
-    description = "runtimes"
-
-    for trace_name, configs in traces.items():
-        
-        # Setting up experiment configurations
-        number_of_experiments = configs[0]
-        trace = read_swf(configs[1])
-        plat_file = configs[2]
-        exp_config = ExpConfig(
-            simulator, plat_file,
-            backfilling_flag="", description=description, estimated=False)
-
-        # Run policies experiments
-        policies_flags = {
-            "FCFS": "",
-            "WFP3": "-wfp3",
-            "UNICEF": "-unicef",
-            "SJT": "-spt",
-            "SAF": "-saf",
-            "SEX": "-sextic",
-            "QUI": "-quintic",
-            "QUA": "-quartic",
-            "CUB": "-cubic",
-            "SQR": "-quadratic",
-            "LIN": "-linear"
-        }
-        size = len(policies_flags)
-        policies = Policies(list(policies_flags.keys()), list(policies_flags.values()), size)
-
-        # Perform the experiments
-        slowdowns = perform_experiments(number_of_experiments, trace, trace_name, policies, exp_config)
-        
-        # Save slowdowns as CSV
-        slowdowns.to_csv("experiments/" + trace_name + "_" + exp_config.description + ".csv", index=False)
-
-def real_workload_experiments():
+def workload_experiments():
     # Setting up experiment configurations
     traces = {
         # "ANL": [15, "swfs/ANL-Intrepid-2009-1.swf", "xmls/deployment_anl.xml"],
@@ -229,7 +188,9 @@ def real_workload_experiments():
                 "LIN": "-lin",
                 "QDR": "-qdr",
                 "CUB": "-cub",
-                "QUA": "-qua"
+                "QUA": "-qua",
+                "QUI": "-qui",
+                "SEX": "-sex"
             }
             size = len(policies_flags)
             policies = Policies(list(policies_flags.keys()), list(policies_flags.values()), size)
@@ -262,7 +223,7 @@ def main():
     # "deployment_blue.xml"; "deployment_sdscsp2.xml"
 
     #func_comparison()
-    real_workload_experiments()
+    workload_experiments()
 
 if __name__ == "__main__":
     main()
