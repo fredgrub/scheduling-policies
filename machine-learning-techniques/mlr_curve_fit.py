@@ -31,7 +31,7 @@ def fit_and_eval(func, p, q, r, score):
 
 def main():
     # extract p, q, r and score from csv file and return it as a numpy array
-    p, q, r, score = extract_data_from_csv("machine-learning-techniques/score-distribution-0.csv")
+    p, q, r, score = extract_data_from_csv("score-distribution-1.csv")
     
     functions = [lin, sqr, cub, qua, qui, sex]
     functions_labels = ["Lin", "Sqr", "Cub", "Qua", "Qui", "Sex"]
@@ -44,7 +44,7 @@ def main():
         print(f"MAE = {mae:e}")
         
         # save the optimized parameters to a file named as the polynomial name
-        np.savetxt(f"machine-learning-techniques/Parameters/{functions_labels[i]}_parameters.txt", popt)
+        np.savetxt(f"Parameters/{functions_labels[i]}_parameters.txt", popt)
 
 if __name__ == '__main__':
     main()
