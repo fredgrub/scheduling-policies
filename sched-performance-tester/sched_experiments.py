@@ -151,15 +151,15 @@ def workload_experiments():
         # "SDSC_BLUE": [64, "swfs/SDSC-BLUE-2000-4.2-cln.swf", "xmls/deployment_blue.xml"],
         # "SDSC_SP2": [47, "swfs/SDSC-SP2-1998-4.2-cln.swf", "xmls/deployment_sdscsp2.xml"]
         # "CURIE": [15, "swfs/CEA-Curie-2011-2.1-cln.swf", "xmls/deployment_curie.xml"],
-        "Lublin_256": [50, "swfs/lublin_256.swf", "xmls/deployment_day.xml"],
+        # "Lublin_256": [50, "swfs/lublin_256.swf", "xmls/deployment_day.xml"],
         # "Lublin_1024": [50, "swfs/lublin_1024.swf", "xmls/deployment_day_1024.xml"],
-        # "estLublin_256": [50, "swfs/lublin_256_est.swf", "xmls/deployment_day.xml"],
-        # "estLublin_1024": [50, "swfs/lublin_1024_est.swf", "xmls/deployment_day_1024.xml"]
+        "estLublin_256": [50, "swfs/lublin_256_est.swf", "xmls/deployment_day.xml"],
+        "estLublin_1024": [50, "swfs/lublin_1024_est.swf", "xmls/deployment_day_1024.xml"]
         }
 
     simulators = {
-        "runtimes": ["sched-simulator-runtime", "", False],
-        # "estimate": ["sched-simulator-estimate-backfilling", "", True],
+        # "runtimes": ["sched-simulator-runtime", "", False],
+        "estimate": ["sched-simulator-estimate-backfilling", "", True],
         # "backfilling": ["sched-simulator-estimate-backfilling", "-bf", True]
         }
 
