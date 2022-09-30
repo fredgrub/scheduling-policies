@@ -3,7 +3,7 @@ def lin(x, t0, t1, t2, t3):
     lin_term = (t0 + t1*p + t2*q + t3*r)
     return lin_term
 
-def sqr(x, t0, t1, t2, t3, t4, t5, t6, t7):
+def qdr(x, t0, t1, t2, t3, t4, t5, t6, t7):
     p, q, r = x
     lin_term = lin(x, t0, t1, t2, t3)
     sq_term = (t4*p**2 + t5*q**2 + t6*r**2) + (t7*p*q)
@@ -14,7 +14,7 @@ def cub(
     x, t0, t1, t2, t3, t4, t5, t6, t7, t8, t9,
     t10, t11, t12):
     p, q, r = x
-    sq_term = sqr(x, t0, t1, t2, t3, t4, t5, t6, t7)
+    sq_term = qdr(x, t0, t1, t2, t3, t4, t5, t6, t7)
     cub_term = (t8*p**3 + t9*q**3 + t10*r**3) \
         + (t11*(p**2)*q + t12*p*(q**2))
 

@@ -2,8 +2,13 @@ import numpy as np
 import scipy.optimize as opt
 from polynomials import *
 
-# Extract p, q, r and score from csv file and return it as a numpy array.
-def extract_data_from_csv(filename):
+SECONDS_IN_ONE_HOUR = 3600
+
+def extract_score_distribution_with_parameters(filename):
+    """
+    Extract p, q, r and score from .csv file and return them as a numpy array.
+    """
+
     p = []
     q = []
     r = []
@@ -18,33 +23,56 @@ def extract_data_from_csv(filename):
 
     return np.array(p), np.array(q), np.array(r), np.array(score)
 
-def fit_and_eval(func, p, q, r, score):
-    # Run opt.curve_fit() using func as the model function, (p, q, r) as the parameters, score as the data to be fitted and
-    # let sigma be 1.0/(p*q) with absolute_sigma=true. Return the optimized parameters and covariance matrix.
-    popt, pcov = opt.curve_fit(func, (p, q, r), score, sigma=(1.0/(p*q)), absolute_sigma=True)
+def fit_and_evaluate(f, p, q, r, score):
+    """
+    Use non-linear least squares to fit a function, f, to data. (p, q, r) are the parameters, and score is the data to 
+    be fitted. The 1/p*q uncertainty emphasize that the fit must perform a good estimation of the score of large area
+    jobs.
+    
+    Returns the optimized parameters and the estimated covariance matrix.
+    """
+
+    popt, pcov = opt.curve_fit(f, (p, q, r), score, sigma=(1.0/(p*q)), absolute_sigma=True)
 
     # Compute the mean absolute error of the fit.
-    mae = np.mean(np.abs(func((p, q, r), *popt) - score))
+    mae = np.mean(np.abs(f((p, q, r), *popt) - score))
 
     return popt, pcov, mae
 
+def seconds_to_hours_normalization(list_of_numbers):
+    """
+    Convert a list of numbers in seconds to hours.
+    """
+
+    return np.array(list(map(lambda x: x / SECONDS_IN_ONE_HOUR, list_of_numbers)))
+
+def normalize_temporal_variables(runtimes, submittals):
+    """
+    Normalize temporal variables using the seconds-to-hours normalization.
+    """
+
+    return seconds_to_hours_normalization(runtimes), seconds_to_hours_normalization(submittals)
 
 def main():
-    # extract p, q, r and score from csv file and return it as a numpy array
-    p, q, r, score = extract_data_from_csv("score-distribution-1.csv")
+    # get the distribution variables
+    filename = "score-distribution-1.csv"
+    p, q, r, score = extract_score_distribution_with_parameters(filename)
     
-    functions = [lin, sqr, cub, qua, qui, sex]
-    functions_labels = ["Lin", "Sqr", "Cub", "Qua", "Qui", "Sex"]
+    # apply temporal normalization
+    p, r = normalize_temporal_variables(p, r)
+
+    functions = [lin, qdr, cub, qua, qui, sex]
+    functions_labels = ["lin", "qdr", "cub", "qua", "qui", "sex"]
 
     for i, polynomial in enumerate(functions):
         # fit and evaluate the model with polynomial
-        popt, _, mae = fit_and_eval(polynomial, p, q, r, score)
+        popt, _, mae = fit_and_evaluate(polynomial, p, q, r, score)
         
         print(f"*** {functions_labels[i]}")
         print(f"MAE = {mae:e}")
         
         # save the optimized parameters to a file named as the polynomial name
-        np.savetxt(f"Parameters/{functions_labels[i]}_parameters.txt", popt)
+        np.savetxt(f"Parameters/{functions_labels[i]}_normalized.txt", popt)
 
 if __name__ == '__main__':
     main()
