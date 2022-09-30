@@ -7,16 +7,17 @@
 
 double linear(double p, double q, double r)
 {
+    double *theta;
     
     if(NORMALIZE == 1)
     {
         p = p / SECONDS_IN_ONE_HOUR;
         r = r / SECONDS_IN_ONE_HOUR;
-        double *theta = temporal_normalized_lin_parameters; 
+        theta = temporal_normalized_lin_parameters; 
     }
     else
     {
-        double *theta = default_lin_parameters;
+        theta = default_lin_parameters;
     }
     
     return theta[0] \
@@ -25,15 +26,17 @@ double linear(double p, double q, double r)
 
 double quadratic(double p, double q, double r)
 {
+    double *theta;
+
     if(NORMALIZE == 1)
     {
         p = p / SECONDS_IN_ONE_HOUR;
         r = r / SECONDS_IN_ONE_HOUR;
-        double *theta = temporal_normalized_qdr_parameters; 
+        theta = temporal_normalized_qdr_parameters; 
     }
     else
     {
-        double *theta = default_qdr_parameters;
+        theta = default_qdr_parameters;
     }
     
     return theta[0] \
@@ -44,15 +47,17 @@ double quadratic(double p, double q, double r)
 
 double cubic(double p, double q, double r)
 {
+    double *theta;
+
     if(NORMALIZE == 1)
     {
         p = p / SECONDS_IN_ONE_HOUR;
         r = r / SECONDS_IN_ONE_HOUR;
-        double *theta = temporal_normalized_cub_parameters; 
+        theta = temporal_normalized_cub_parameters; 
     }
     else
     {
-        double *theta = default_cub_parameters;
+        theta = default_cub_parameters;
     }
 
     return theta[0] \
@@ -65,15 +70,17 @@ double cubic(double p, double q, double r)
 
 double quartic(double p, double q, double r)
 {
+    double *theta;
+
     if(NORMALIZE == 1)
     {
         p = p / SECONDS_IN_ONE_HOUR;
         r = r / SECONDS_IN_ONE_HOUR;
-        double *theta = temporal_normalized_qua_parameters; 
+        theta = temporal_normalized_qua_parameters; 
     }
     else
     {
-        double *theta = default_qua_parameters;
+        theta = default_qua_parameters;
     }
 
     return theta[0] \
@@ -88,15 +95,17 @@ double quartic(double p, double q, double r)
 
 double quintic(double p, double q, double r)
 {
+    double *theta;
+
     if(NORMALIZE == 1)
     {
         p = p / SECONDS_IN_ONE_HOUR;
         r = r / SECONDS_IN_ONE_HOUR;
-        double *theta = temporal_normalized_qui_parameters; 
+        theta = temporal_normalized_qui_parameters; 
     }
     else
     {
-        double *theta = default_qui_parameters;
+        theta = default_qui_parameters;
     }
 
     return theta[0] \
@@ -114,15 +123,17 @@ double quintic(double p, double q, double r)
 
 double sextic(double p, double q, double r)
 {
+    double *theta;
+    
     if(NORMALIZE == 1)
     {
         p = p / SECONDS_IN_ONE_HOUR;
         r = r / SECONDS_IN_ONE_HOUR;
-        double *theta = temporal_normalized_sex_parameters; 
+        theta = temporal_normalized_sex_parameters; 
     }
     else
     {
-        double *theta = default_sex_parameters;
+        theta = default_sex_parameters;
     }
 
     return theta[0] \

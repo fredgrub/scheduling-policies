@@ -7,7 +7,7 @@ double default_lin_parameters[] = {
     -1.627303114515290627e-07
 };
 
-double default_lin_parameters[] = {
+double default_qdr_parameters[] = {
     3.590707241156540497e-02,
     3.576538144567375239e-07,
     -3.053216185525264864e-05,

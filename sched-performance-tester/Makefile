@@ -17,7 +17,7 @@ CFLAGS = -O3 $(WARNINGS)
 INCLUDES = 
 DEFS = -I$(INSTALL_PATH)/include -L$(INSTALL_PATH)/lib/
 LDADD = -lm -lsimgrid 
-LIBS = polynomials.c
+LIBS = polynomials.c parameters.c
 
 C_FILES = $(wildcard *.c)
 BIN_FILES = $(patsubst %.c,%,$(C_FILES))
