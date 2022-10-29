@@ -28,3 +28,11 @@ RUN python3 -m pip install \
     statsmodels \
     sklearn \
     jupyterlab
+
+ RUN addgroup --gid 100 user; exit 0
+ RUN adduser --disabled-password --gecos '' --uid 1000 --gid 100 simgrid; exit 0
+ RUN echo "simgrid:simgrid" | chpasswd && adduser simgrid sudo
+ RUN echo '----->'
+ RUN echo 'root:simgrid' | chpasswd
+ ENV TERM xterm-256color
+ USER simgrid
