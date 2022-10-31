@@ -16,7 +16,7 @@ dev: simgrid
 build_docker: dev
 
 run:
-	docker run -d -it --name ${CONTAINER_NAME} -p 8888:8888 --mount type=bind,source=${WORKING_DIR},target=/home/simgrid/ ${DEV_IMAGE_NAME}
+	docker run -d -it --name ${CONTAINER_NAME} -p 8888:8888 --mount type=bind,source=${WORKING_DIR},target=/home/simgrid/dev ${DEV_IMAGE_NAME}
 
 end:
 	docker stop ${CONTAINER_NAME}
