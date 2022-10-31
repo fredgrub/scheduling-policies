@@ -8,3 +8,8 @@ __pycache__/
 polynomials
 sched-simulator-estimate-backfilling
 sched-simulator-runtime
+trials_simulator
+
+# temporary data
+current-simulation.csv
+result-temp.dat
