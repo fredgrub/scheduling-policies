@@ -6,7 +6,8 @@ from swf_reader import ReaderSWF
 
 class SchedulingSimulator:
     def __init__(self, workload_file, number_of_tuples, number_of_trials, state_size, queue_size, random_seed):
-        random.seed(random_seed)
+        if random_seed != None:
+            random.seed(random_seed)
         self.number_of_tuples = number_of_tuples
         self.number_of_trials = number_of_trials
         self.state_size = state_size
@@ -139,6 +140,3 @@ class SchedulingSimulator:
 
             with open("training-data/set-"+str(tuple_index)+".csv", "w+") as out_file:
                 out_file.write(output)
-
-    def clear_state(self):
-        subprocess.call(['rm states/*.csv task-sets/*.csv training-data/*.csv'], shell=True)

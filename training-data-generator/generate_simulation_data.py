@@ -14,8 +14,8 @@ filename = "lublin_256.swf"
 model_num_nodes = []
 model_run_times = []
 model_submit_times = []
-num_tasks_queue = 32
-num_tasks_state = 16
+num_tasks_queue = 8
+num_tasks_state = 4
 earliest_submit = 0
 tasks_state_nodes = []
 tasks_state_runtimes = []
@@ -23,9 +23,10 @@ tasks_state_submit = []
 tasks_queue_nodes = []
 tasks_queue_runtimes = []
 tasks_queue_submit = []
-num_trials = 5000
+num_trials = 200
 
-for line in file(filename):
+swf_file = open(filename)
+for line in swf_file:
   row = re.split(" +", line.lstrip(" "))
   if row[0] == ';':
     continue
@@ -34,7 +35,9 @@ for line in file(filename):
     model_run_times.append(int(row[3]))
     model_num_nodes.append(int(row[4]))
     model_submit_times.append(int(row[1])) 
+swf_file.close()
 
+# random.seed(42)
 #random.seed(None)
 
 start = 0
@@ -44,14 +47,14 @@ while os.path.exists("task-sets/set-"+str(start)+".csv") == True:
 #if start != 0: 
 #  start = start-1
 
-for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated 
+for i in range(start,1): #maximum number os tuples (S,Q) to be simulated 
   task_file = open("task-sets/set-"+str(i)+".csv", "w+")
   tasks_state_nodes = []
   tasks_state_runtimes = []
   tasks_state_submit = []
   choose = random.randint(0,len(model_run_times)-1 - (num_tasks_queue+num_tasks_state))
   earliest_submit = model_submit_times[choose]
-  for j in xrange(0,16):
+  for j in range(0,num_tasks_state):
     tasks_state_nodes.append(model_num_nodes[choose+j])
     tasks_state_runtimes.append(model_run_times[choose+j])
     tasks_state_submit.append(model_submit_times[choose+j] - earliest_submit)
@@ -59,7 +62,7 @@ for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated
   tasks_queue_nodes = []
   tasks_queue_runtimes = []
   tasks_queue_submit = []
-  for j in xrange(0,32):
+  for j in range(0,num_tasks_queue):
     #choose = random.randint(0,len(model_run_times)-1)
     tasks_queue_nodes.append(model_num_nodes[num_tasks_state+choose+j])
     tasks_queue_runtimes.append(model_run_times[num_tasks_state+choose+j])
@@ -70,8 +73,8 @@ for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated
   
   
   perm_indices = np.empty(shape=(num_trials, num_tasks_queue), dtype=int)
-  for j in xrange(0,num_trials):
-    perm_indices[j] = np.arange(32)
+  for j in range(0,num_trials):
+    perm_indices[j] = np.arange(num_tasks_queue)
 
   #print(perm_indices)
 
@@ -90,13 +93,13 @@ for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated
   shuffle_tasks_queue_nodes = np.copy(tasks_queue_nodes)
   shuffle_tasks_queue_submit = np.copy(tasks_queue_submit)
 
-  for j in xrange(0,num_trials): #10000
+  for j in range(0,num_trials): #10000
     #iteration_file = open("iterations/set"+str(i)+"-it"+str(j)+".csv", "w+")
     iteration_file = open("current-simulation.csv", "w+")
     #iteration_file = cStringIO.StringIO()
     #random shuffle between the tasks in the queue
-    for k in xrange(0,32):
-      choose = random.randint(0,31)
+    for k in range(0,num_tasks_queue):
+      choose = random.randint(0,num_tasks_queue -1)
       buffer_runtimes = shufle_tasks_queue_runtimes[choose]
       buffer_nodes = shuffle_tasks_queue_nodes[choose] 
       buffer_submit = shuffle_tasks_queue_submit[choose]     
@@ -109,9 +112,9 @@ for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated
       buffer_index = perm_indices[j,choose]
       perm_indices[j,choose] = perm_indices[j,k]
       perm_indices[j,k] = buffer_index;
-    for k in xrange(0,16):      
+    for k in range(0,num_tasks_state):      
       iteration_file.write(str(tasks_state_runtimes[k])+","+str(tasks_state_nodes[k])+","+str(tasks_state_submit[k])+"\n")
-    for k in xrange(0,32):   
+    for k in range(0,num_tasks_queue):   
       iteration_file.write(str(tasks_queue_runtimes[perm_indices[j,k]])+","+str(tasks_queue_nodes[perm_indices[j,k]])+","+str(tasks_queue_submit[perm_indices[j,k]])+"\n")
       #if j == 0:
       #  permutation_file.write(str(perm_indices[j]))
@@ -135,7 +138,7 @@ for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated
   results_prefix = "results/set"
   states_prefix = "states/set"
 
-  for trialID in xrange(0,num_trials):
+  for trialID in range(0,num_trials):
     exp_first_choice[trialID] = perm_indices[trialID,0] #asserted
     #print(exp_first_choice[trialID])
     #print(perm_indices[trialID,:])
@@ -156,20 +159,20 @@ for i in xrange(start,2): #maximum number os tuples (S,Q) to be simulated
 
   #print("%.2f %.2f [%d %d]" % (np.mean(slow_zero), np.mean(slow_one), len(slow_zero), len(slow_one)))
     
-  for line in file(states_prefix + str(i) + ".csv"):
-    state = str(line)
+  # for line in file(states_prefix + str(i) + ".csv"):
+  #   state = str(line)
 
-  for trialID in xrange(0, len(exp_slowdowns)):
+  for trialID in range(0, len(exp_slowdowns)):
     distribution[exp_first_choice[trialID]] += exp_slowdowns[trialID]
 
   #output += state.rstrip('\n') + ","
 
 
-  for k in xrange(0, len(distribution)):
+  for k in range(0, len(distribution)):
     distribution[k] = distribution[k] / exp_sum_slowdowns
     #debug += distribution[j]
   
-  for k in xrange(0,num_tasks_queue):
+  for k in range(0,num_tasks_queue):
     #print("%d %d" % (model_run_times[j], model_num_nodes[j]))
     output += str(int(tasks_queue_runtimes[k])) + "," + str(int(tasks_queue_nodes[k])) + "," + str(int(tasks_queue_submit[k])) + ","
     output += str(distribution[k]) + "\n"
